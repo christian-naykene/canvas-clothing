@@ -1,8 +1,19 @@
-import { Categories } from './components/categories/categories.component';
+import { Routes, Route } from 'react-router-dom';
+import { Home } from './components/routes/home/home.component';
+import { Navigation } from './components/routes/navigation/navigation.component';
+
+const Shop = () => {
+  return <h1>I am a shop</h1>
+}
 
 const App = () => {
   return (
-    <Categories />
+    <Routes>
+      <Route path="/" element={<Navigation />}>
+        <Route index element={<Home />} /> {/*index matches the parental component and will render at / */}
+        <Route path='shop' element={<Shop />} /> {/* path is now /home/shop*/}
+      </Route>
+    </Routes>
   )
 }
 
