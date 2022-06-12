@@ -85,8 +85,8 @@ export const SignIn = () => {
             <Button type="submit" buttonType="inverted" >
               Sign In
             </Button>
-            <Button buttonType="google" onClick={logGoogleUser} >
-              Sign In with Google
+            <Button type="button" buttonType="google" onClick={logGoogleUser} >
+              Google Sign In
             </Button>
           </div>
         </form>
