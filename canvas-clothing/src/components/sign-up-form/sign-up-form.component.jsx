@@ -3,8 +3,6 @@ import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "
 import { Button } from "../button/button.component"
 import { FormInput } from "../form-input/form-input.component"
 import './sign-up-form.styles.scss'
-import { useContext } from "react"
-import { UserContext } from "../../context/user.context"
 
 // default state of the sign up fields
 const defaultFormFields = {
@@ -19,8 +17,6 @@ export const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   // destructure the keys  to assign to field names
   const { displayName, email, password, confirmPassword } = formFields
-
-  const { setCurrentUser } = useContext(UserContext)
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields)
@@ -41,8 +37,6 @@ export const SignUpForm = () => {
         email,
         password
       )
-
-      setCurrentUser(user)
 
       await createUserDocumentFromAuth(user, { displayName } )
 
