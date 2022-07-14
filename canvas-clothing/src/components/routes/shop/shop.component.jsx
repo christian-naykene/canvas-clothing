@@ -1,14 +1,16 @@
 import SHOP_DATA from '../../../shop-data.json'
 import { useContext } from 'react'
 import { ProductsContext } from '../../../context/products.context'
+import { ProductCard } from '../../product-card/product-card.component'
+import './shop.styles.scss'
 export const Shop = () => {
   const { products } = useContext(ProductsContext)
-  console.log(products)
+
   return (
-    products.map(({id, name}) => (
-      <div key={id}>
-        <h1>{name}</h1>
-      </div>
-    ))
+    <div className='products-container'>
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product}/>
+      ))}
+    </div>
   )
 }
