@@ -5,8 +5,10 @@ export const CartContext =  createContext({
   setIsCartOpen: () => {},
   isCartOpen: false,
   cartItems: [],
-  setCartItems: () => {},
-  cartItemsCount: 0
+  addItemToCart: () => {},
+  cartItemsCount: 0,
+  removeItemFromCart: () => {},
+  clearItemFromCart: () => {}
 })
 
 export const CartProvider = ({ children }) => {
@@ -21,7 +23,31 @@ export const CartProvider = ({ children }) => {
       setCartItemsCount(newCartCount)
   }, [cartItems])
 
-  const handleCartItem = (cartArray, productToAdd) => {
+  const dropFromCart = (cartItems, productToRemove) => {
+    return cartItems.filter(item => item.id !== productToRemove.id)
+  }
+
+  //Create a function that decreases the cart item quantity or removes it from cart if q is 1
+  const decreaseCartItem = (cartArray, productToRemove) => {
+    //Check if cart item exists in cart array
+    const existingCartItem = cartArray.find(item => item.id === productToRemove.id)
+    //If quantity = 1, remove from cart
+    if (existingCartItem) {
+      if(productToRemove.quantity === 1) {
+        return cartItems.filter(item => item.id !== productToRemove.id)
+      }
+    }
+    return cartArray.map(item => item.id === productToRemove.id ?
+      {...item, quantity: item.quantity - 1}
+      : item
+    )
+  }
+
+  const removeItemFromCart = (productToRemove) => {
+    setCartItems( decreaseCartItem(cartItems, productToRemove))
+  }
+
+  const increaseCartItem = (cartArray, productToAdd) => {
     //find the item in the cart
     const existingCartItem = cartArray.find(cartItem => cartItem.id === productToAdd.id)
     //if it exists, return item and add quantity value by 1, else return the item
@@ -36,10 +62,22 @@ export const CartProvider = ({ children }) => {
   }
 
   const addItemToCart = (productToAdd) => {
-    setCartItems( handleCartItem(cartItems, productToAdd))
+    setCartItems( increaseCartItem(cartItems, productToAdd))
   }
 
-  const value = { isCartOpen, setIsCartOpen, addItemToCart, cartItems, cartItemsCount }
+  const clearItemFromCart = (productToRemove) => {
+    setCartItems(dropFromCart(cartItems, productToRemove))
+  }
+
+  const value = {
+    isCartOpen,
+    setIsCartOpen,
+    addItemToCart,
+    cartItems,
+    cartItemsCount,
+    removeItemFromCart,
+    clearItemFromCart
+  }
 
   return (
     <CartContext.Provider value={value}>
