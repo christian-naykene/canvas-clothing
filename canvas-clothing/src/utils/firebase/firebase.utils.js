@@ -14,6 +14,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  collection
 } from 'firebase/firestore'
 const firebaseConfig = {
   apiKey: "AIzaSyD34QaIsjjncCNvwNqA8fQMt7groAw146w",
@@ -36,6 +37,13 @@ export const auth = getAuth()
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 
 export const db = getFirestore()
+
+export const addCollectionAndDocuments = (collectionKey, documentsToAdd) => {
+//Refer to the right collection
+const collectionRef = collection(db, collectionKey)
+//Transaction is a successful unit of work on a db
+
+}
 
 export const createUserDocumentFromAuth = async (
   userAuth,
