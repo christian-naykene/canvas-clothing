@@ -1,3 +1,4 @@
+import SHOP_DATA from '../../../shop-data.json'
 import { useContext } from 'react'
 import { ProductsContext } from '../../../context/products.context'
 import { ProductCard } from '../../product-card/product-card.component'
