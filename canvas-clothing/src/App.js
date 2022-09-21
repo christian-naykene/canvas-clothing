@@ -10,7 +10,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />} /> {/*index matches the parental component and will render at / */}
-        <Route path='shop' element={<Shop />} /> {/* path is now /home/shop*/}
+        <Route path='shop/*' element={<Shop />} /> {/* path is now /home/shop*/}
         <Route path='sign-in' element={<SignIn />} />
         <Route path='checkout' element={< Checkout />} />
       </Route>
