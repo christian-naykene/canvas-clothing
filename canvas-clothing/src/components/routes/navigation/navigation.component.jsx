@@ -10,7 +10,7 @@ import { CartContext } from "../../../context/cart.context"
 
 export const Navigation = () => {
   const {currentUser} = useContext(UserContext)
-  const {isCartOpen} = useContext(CartContext)
+  const {isCartOpen, setIsCartOpen} = useContext(CartContext)
 
   return (
     <>
@@ -19,14 +19,14 @@ export const Navigation = () => {
           <CrwnLogo className="logo" />
         </Link>
         <div className="nav-links-container">
-          <Link className="nav-link" to="/shop">
+          <Link className="nav-link" to="/shop" onClick={() => setIsCartOpen(!isCartOpen)}>
             Shop
           </Link>
           { currentUser ? (
             <Link className="nav-link" onClick={signOutUser} to="/sign-in">
             Sign Out
             </Link>
-            ) : (<Link className="nav-link" to="/sign-in">
+            ) : (<Link className="nav-link" to="/sign-in" onClick={() => setIsCartOpen(!isCartOpen)}>
               Sign In
             </Link>
           )}
