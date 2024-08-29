@@ -1,8 +1,9 @@
-import { createContext, useState, useEffect, useReducer } from "react";
+import { createContext, useReducer } from "react";
+import { createAction } from "../utils/firebase/reducer/reducer.utils";
 
 export const CartContext = createContext({
-  setIsCartOpen: () => {},
   isCartOpen: false,
+  setIsCartOpen: () => {},
   cartItems: [],
   addItemToCart: () => {},
   cartItemsCount: 0,
@@ -10,6 +11,11 @@ export const CartContext = createContext({
   clearItemFromCart: () => {},
   cartTotal: 0,
 });
+
+const CART_ACTION_TYPES = {
+  SET_CART_ITEMS: "SET_CART_ITEMS",
+  SET_IS_CART_OPEN: "SET_IS_CART_OPEN",
+};
 
 const INITIAL_STATE = {
   isCartOpen: false,
@@ -22,43 +28,44 @@ const cartReducer = (state, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case "SET_CART_ITEMS":
-      return { ...state, cartItems: payload };
-    case "SET_CART_ITEM_COUNT":
-      return { ...state, cartItemsCount: payload };
-    case "SET_CART_TOTAL":
-      return { ...state, cartTotal: payload };
+    case CART_ACTION_TYPES.SET_CART_ITEMS:
+      return {
+        ...state,
+        ...payload,
+      };
+    case CART_ACTION_TYPES.SET_IS_CART_OPEN:
+      return { ...state, isCartOpen: payload };
     default:
       throw new Error(`Unhandled action type ${type} in cartReducer`);
   }
 };
 
 export const CartProvider = ({ children }) => {
-  const [{ cartItems, cartItemsCount, cartTotal }, dispatch] = useReducer(
-    cartReducer,
-    INITIAL_STATE
-  );
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [{ cartItems, cartItemsCount, cartTotal, isCartOpen }, dispatch] =
+    useReducer(cartReducer, INITIAL_STATE);
 
   const updateCartItemsReducer = (newCartItems) => {
-    const newCartCount = cartItems.reduce(
+    const newCartCount = newCartItems.reduce(
       (total, cartItem) => total + cartItem.quantity,
       0
     );
 
-    const newCartTotal = cartItems.reduce(
+    const newCartTotal = newCartItems.reduce(
       (total, cartItem) => total + cartItem.quantity * cartItem.price,
       0
     );
 
-    dispatch({
-      type: "SET_CART_ITEMS",
-      payload: {
+    dispatch(
+      createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
         cartItems: newCartItems,
         cartItemsCount: newCartCount,
         cartTotal: newCartTotal,
-      },
-    });
+      })
+    );
+  };
+
+  const setIsCartOpen = (bool) => {
+    dispatch(createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, bool));
   };
 
   const dropFromCart = (cartItems, productToRemove) => {
@@ -89,15 +96,19 @@ export const CartProvider = ({ children }) => {
     updateCartItemsReducer(newCartItems);
   };
 
-  const increaseCartItem = (cartArray, productToAdd) => {
+  const increaseCartItem = (cartItems, productToAdd) => {
+    if (!Array.isArray(cartItems)) {
+      console.error("cartItems is not an array:", cartItems);
+      return [];
+    }
     //find the item in the cart
-    const existingCartItem = cartArray.find(
+    const existingCartItem = cartItems.find(
       (cartItem) => cartItem.id === productToAdd.id
     );
     //if it exists, return item and add quantity value by 1, else return the item
     //return new array with updated values (why new array?)
     if (existingCartItem) {
-      return cartArray.map((cartItem) =>
+      return cartItems.map((cartItem) =>
         cartItem.id === productToAdd.id
           ? { ...cartItem, quantity: cartItem.quantity + 1 }
           : cartItem
